@@ -1,26 +1,53 @@
 import pandas as pd
-import numpy as np
 import os
 import json
-from datetime import datetime
+
+# Load config
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+input_folder_path = config["input_folder_path"]
+output_folder_path = config["output_folder_path"]
 
 
-
-
-#############Load config.json and get input and output paths
-with open('config.json','r') as f:
-    config = json.load(f) 
-
-input_folder_path = config['input_folder_path']
-output_folder_path = config['output_folder_path']
-
-
-
-#############Function for data ingestion
 def merge_multiple_dataframe():
-    #check for datasets, compile them together, and write to an output file
+
+    final_dataframe = pd.DataFrame()
+    ingested_files = []
+
+    for file in os.listdir(input_folder_path):
+
+        if file.endswith(".csv"):
+
+            filepath = os.path.join(input_folder_path, file)
+
+            temp_df = pd.read_csv(filepath)
+
+            final_dataframe = pd.concat(
+                [final_dataframe, temp_df],
+                ignore_index=True
+            )
+
+            ingested_files.append(file)
+
+    final_dataframe.drop_duplicates(inplace=True)
+
+    os.makedirs(output_folder_path, exist_ok=True)
+
+    final_dataframe.to_csv(
+        os.path.join(output_folder_path, "finaldata.csv"),
+        index=False
+    )
+
+    with open(
+        os.path.join(output_folder_path, "ingestedfiles.txt"),
+        "w"
+    ) as f:
+
+        for file in ingested_files:
+            f.write(file + "\n")
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     merge_multiple_dataframe()
+    

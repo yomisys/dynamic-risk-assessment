@@ -1,20 +1,40 @@
 import requests
+import json
 
-#Specify a URL that resolves to your workspace
-URL = "http://127.0.0.1/"
+# Specify URL of local Flask app
+URL = "http://127.0.0.1:8000"
 
+# Call each API endpoint
+response1 = requests.post(
+    f"{URL}/prediction"
+).json()
 
+response2 = requests.get(
+    f"{URL}/scoring"
+).json()
 
-#Call each API endpoint and store the responses
-response1 = #put an API call here
-response2 = #put an API call here
-response3 = #put an API call here
-response4 = #put an API call here
+response3 = requests.get(
+    f"{URL}/summarystats"
+).json()
 
-#combine all API responses
-responses = #combine reponses here
+response4 = requests.get(
+    f"{URL}/diagnostics"
+).json()
 
-#write the responses to your workspace
+# Combine responses
+responses = {
+    "prediction": response1,
+    "scoring": response2,
+    "summarystats": response3,
+    "diagnostics": response4
+}
 
+# Write responses to file
+with open("apireturns.txt", "w") as file:
+    json.dump(
+        responses,
+        file,
+        indent=4
+    )
 
-
+print("API responses saved to apireturns.txt")
