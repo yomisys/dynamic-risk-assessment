@@ -38,8 +38,8 @@
     ],
     "diagnostics": {
         "execution_time": [
-            0.5610272040357813,
-            1.4985446550417691
+            0.5563469330081716,
+            1.470009210985154
         ],
         "outdated_packages": [
             {
@@ -104,7 +104,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "4.3.2",
+                "latest_version": "4.3.3",
                 "name": "astroid",
                 "version": "4.0.4"
             },
@@ -164,13 +164,13 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "1.43.105",
+                "latest_version": "1.43.108",
                 "name": "boto3",
                 "version": "1.42.59"
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "1.43.105",
+                "latest_version": "1.43.108",
                 "name": "botocore",
                 "version": "1.42.59"
             },
@@ -206,7 +206,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "3.5.1",
+                "latest_version": "3.5.2",
                 "name": "charset-normalizer",
                 "version": "3.4.4"
             },
@@ -236,13 +236,13 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "50.0.1",
+                "latest_version": "50.0.2",
                 "name": "cryptography",
                 "version": "43.0.3"
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "0.143.0",
+                "latest_version": "0.146.0",
                 "name": "databricks-sdk",
                 "version": "0.94.0"
             },
@@ -290,7 +290,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "0.142.0",
+                "latest_version": "0.142.2",
                 "name": "fastapi",
                 "version": "0.128.0"
             },
@@ -314,7 +314,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "4.0.6",
+                "latest_version": "4.0.9",
                 "name": "filelock",
                 "version": "3.24.3"
             },
@@ -368,7 +368,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "3.1.62",
+                "latest_version": "3.2.0",
                 "name": "GitPython",
                 "version": "3.1.46"
             },
@@ -380,19 +380,19 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "2.200.0",
+                "latest_version": "2.201.0",
                 "name": "google-api-python-client",
                 "version": "2.190.0"
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "2.59.0",
+                "latest_version": "2.59.1",
                 "name": "google-auth",
                 "version": "2.48.0"
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "0.4.3",
+                "latest_version": "0.4.4",
                 "name": "google-auth-httplib2",
                 "version": "0.3.0"
             },
@@ -614,6 +614,12 @@
             },
             {
                 "latest_filetype": "wheel",
+                "latest_version": "3.0.4",
+                "name": "MarkupSafe",
+                "version": "3.0.3"
+            },
+            {
+                "latest_filetype": "wheel",
                 "latest_version": "3.11.2",
                 "name": "matplotlib",
                 "version": "3.10.0"
@@ -704,7 +710,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "0.67.0",
+                "latest_version": "0.68.0",
                 "name": "numba",
                 "version": "0.62.1"
             },
@@ -785,6 +791,12 @@
                 "latest_version": "12.3.0",
                 "name": "pillow",
                 "version": "12.1.1"
+            },
+            {
+                "latest_filetype": "wheel",
+                "latest_version": "26.2.1",
+                "name": "pip",
+                "version": "26.0.1"
             },
             {
                 "latest_filetype": "wheel",
@@ -908,7 +920,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "4.1.1",
+                "latest_version": "4.1.2",
                 "name": "pylint",
                 "version": "4.0.4"
             },
@@ -938,7 +950,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "1.2.3",
+                "latest_version": "1.2.4",
                 "name": "python-dotenv",
                 "version": "1.2.1"
             },
@@ -1034,6 +1046,12 @@
             },
             {
                 "latest_filetype": "wheel",
+                "latest_version": "84.0.0",
+                "name": "setuptools",
+                "version": "82.0.0"
+            },
+            {
+                "latest_filetype": "wheel",
                 "latest_version": "0.52.0",
                 "name": "shap",
                 "version": "0.50.0"
@@ -1064,7 +1082,7 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "2.1.1",
+                "latest_version": "2.1.3",
                 "name": "SQLAlchemy",
                 "version": "2.0.47"
             },
@@ -1124,13 +1142,13 @@
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "2.14.0",
+                "latest_version": "2.14.1",
                 "name": "torch",
                 "version": "2.10.0+cpu"
             },
             {
                 "latest_filetype": "wheel",
-                "latest_version": "0.29.0",
+                "latest_version": "0.29.1",
                 "name": "torchvision",
                 "version": "0.25.0+cpu"
             },
@@ -1193,6 +1211,12 @@
                 "latest_version": "0.54.0",
                 "name": "uvicorn",
                 "version": "0.41.0"
+            },
+            {
+                "latest_filetype": "wheel",
+                "latest_version": "0.23.0",
+                "name": "uvloop",
+                "version": "0.22.1"
             },
             {
                 "latest_filetype": "wheel",
