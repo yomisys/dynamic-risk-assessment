@@ -5,6 +5,8 @@ import timeit
 import subprocess
 import json
 import os
+import sys
+from importlib.metadata import version, PackageNotFoundError
 
 
 ################## Load config.json and get environment variables
@@ -67,16 +69,12 @@ def dataframe_summary():
         'exited'
     ]
 
-    # Mean
     means = data[numerical_columns].mean().tolist()
 
-    # Median
     medians = data[numerical_columns].median().tolist()
 
-    # Mode
     modes = data[numerical_columns].mode().iloc[0].tolist()
 
-    # Standard Deviation
     stds = data[numerical_columns].std().tolist()
 
     return [
@@ -143,15 +141,79 @@ def execution_time():
 ################## Function to check dependencies
 def outdated_packages_list():
 
-    outdated = subprocess.check_output(
-        [
-            'pip',
-            'list',
-            '--outdated'
-        ]
-    ).decode('utf-8')
+    rows = []
 
-    return outdated
+    with open('requirements.txt', 'r') as f:
+
+        modules = []
+
+        for line in f:
+
+            line = line.strip()
+
+            if not line:
+                continue
+
+            if line.startswith('#'):
+                continue
+
+            package = (
+                line.split('==')[0]
+                .split('>=')[0]
+                .split('<=')[0]
+                .strip()
+            )
+
+            modules.append(package)
+
+    for module in modules:
+
+        try:
+            installed = version(module)
+
+        except PackageNotFoundError:
+            installed = 'not installed'
+
+        try:
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    '-m',
+                    'pip',
+                    'index',
+                    'versions',
+                    module
+                ],
+                capture_output=True,
+                text=True
+            ).stdout
+
+            if '(' in result and ')' in result:
+
+                latest = (
+                    result
+                    .split('(')[1]
+                    .split(')')[0]
+                )
+
+            else:
+
+                latest = 'unknown'
+
+        except Exception:
+
+            latest = 'unknown'
+
+        rows.append(
+            {
+                'module': module,
+                'installed': installed,
+                'latest': latest
+            }
+        )
+
+    return pd.DataFrame(rows)
 
 
 if __name__ == '__main__':
@@ -168,6 +230,6 @@ if __name__ == '__main__':
     print("\nExecution Times:")
     print(execution_time())
 
-    print("\nOutdated Packages:")
+    print("\nDependency Check:")
     print(outdated_packages_list())
     
