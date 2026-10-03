@@ -1,15 +1,19 @@
 import os
 import json
+import shutil
+import subprocess
 
 import ingestion
 import training
 import scoring
 import deployment
-import diagnostics
 import reporting
 
 
-################## Load configuration
+############################
+# Load configuration
+############################
+
 with open("config.json", "r") as f:
     config = json.load(f)
 
@@ -18,20 +22,25 @@ output_folder_path = config["output_folder_path"]
 prod_deployment_path = config["prod_deployment_path"]
 
 
-################## Check and read new data
+############################
+# Read deployed ingested files
+############################
 
-# Read previously ingested files
 with open(
     os.path.join(
         prod_deployment_path,
         "ingestedfiles.txt"
     ),
     "r"
-) as file:
+) as f:
 
-    ingested_files = file.read().splitlines()
+    ingested_files = f.read().splitlines()
 
-# Current source files
+
+############################
+# Check for new data
+############################
+
 source_files = [
     file
     for file in os.listdir(input_folder_path)
@@ -41,28 +50,37 @@ source_files = [
 new_data = False
 
 for file in source_files:
+
     if file not in ingested_files:
         new_data = True
         break
 
 
-################## Deciding whether to proceed, part 1
+############################
+# Stop if no new data
+############################
 
 if not new_data:
-    print("No new data found")
+
+    print("No new data found.")
     quit()
 
 
-################## Run ingestion and training
+print("New data found.")
+
+
+############################
+# Ingest newest data
+############################
 
 ingestion.merge_multiple_dataframe()
 
-training.train_model()
+
+############################
+# Score deployed model
+############################
 
 new_score = scoring.score_model()
-
-
-################## Checking for model drift
 
 with open(
     os.path.join(
@@ -70,36 +88,72 @@ with open(
         "latestscore.txt"
     ),
     "r"
-) as file:
+) as f:
 
-    deployed_score = float(file.read())
-
-model_drift = new_score < deployed_score
+    deployed_score = float(f.read())
 
 
-################## Deciding whether to proceed, part 2
+############################
+# Check for drift
+############################
 
-if not model_drift:
-    print("No model drift detected")
+if new_score >= deployed_score:
+
+    print("No model drift detected.")
     quit()
 
 
-################## Re-deployment
+print("Model drift detected.")
+
+
+############################
+# Retrain model
+############################
+
+training.train_model()
+
+
+############################
+# Generate new score
+############################
+
+new_score = scoring.score_model()
+
+
+############################
+# Redeploy
+############################
 
 deployment.store_model_into_pickle()
 
 
-################## Diagnostics and reporting
-
-diagnostics.model_predictions()
-
-diagnostics.dataframe_summary()
-
-diagnostics.execution_time()
-
-diagnostics.outdated_packages_list()
+############################
+# Reporting
+############################
 
 reporting.score_model()
 
-print("Model drift detected")
-print("Model redeployed successfully")
+if os.path.exists("confusionmatrix.png"):
+
+    shutil.copy(
+        "confusionmatrix.png",
+        "confusionmatrix2.png"
+    )
+
+
+############################
+# API calls
+############################
+
+subprocess.run(
+    ["python", "apicalls.py"]
+)
+
+if os.path.exists("apireturns.txt"):
+
+    shutil.copy(
+        "apireturns.txt",
+        "apireturns2.txt"
+    )
+
+print("Model redeployed successfully.")
