@@ -1,27 +1,48 @@
 import requests
 import json
 
-# Specify URL of local Flask app
+# URL of the running Flask application
 URL = "http://127.0.0.1:8000"
 
-# Call each API endpoint
+############################
+# Call Prediction Endpoint
+############################
+
 response1 = requests.post(
-    f"{URL}/prediction"
+    f"{URL}/prediction",
+    json={
+        "filepath": "testdata/testdata.csv"
+    }
 ).json()
+
+############################
+# Call Scoring Endpoint
+############################
 
 response2 = requests.get(
     f"{URL}/scoring"
 ).json()
 
+############################
+# Call Summary Statistics Endpoint
+############################
+
 response3 = requests.get(
     f"{URL}/summarystats"
 ).json()
+
+############################
+# Call Diagnostics Endpoint
+############################
 
 response4 = requests.get(
     f"{URL}/diagnostics"
 ).json()
 
-# Combine responses
+############################
+# Combine Responses
+############################
+
 responses = {
     "prediction": response1,
     "scoring": response2,
@@ -29,8 +50,15 @@ responses = {
     "diagnostics": response4
 }
 
-# Write responses to file
-with open("apireturns.txt", "w") as file:
+############################
+# Write Results
+############################
+
+with open(
+    "apireturns.txt",
+    "w"
+) as file:
+
     json.dump(
         responses,
         file,
