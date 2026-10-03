@@ -25,15 +25,15 @@ def model_predictions(test_data_file=None):
             'testdata.csv'
         )
 
-    model = pickle.load(
-        open(
-            os.path.join(
-                prod_deployment_path,
-                'trainedmodel.pkl'
-            ),
-            'rb'
-        )
-    )
+    with open(
+        os.path.join(
+            prod_deployment_path,
+            'trainedmodel.pkl'
+        ),
+        'rb'
+    ) as file:
+
+        model = pickle.load(file)
 
     test_data = pd.read_csv(test_data_file)
 
@@ -67,13 +67,24 @@ def dataframe_summary():
         'exited'
     ]
 
+    # Mean
     means = data[numerical_columns].mean().tolist()
 
+    # Median
     medians = data[numerical_columns].median().tolist()
 
+    # Mode
+    modes = data[numerical_columns].mode().iloc[0].tolist()
+
+    # Standard Deviation
     stds = data[numerical_columns].std().tolist()
 
-    return [means, medians, stds]
+    return [
+        means,
+        medians,
+        modes,
+        stds
+    ]
 
 
 ################## Function to measure missing data
@@ -109,25 +120,39 @@ def execution_time():
 
     os.system('python ingestion.py')
 
-    ingestion_time = timeit.default_timer() - start_time
+    ingestion_time = (
+        timeit.default_timer()
+        - start_time
+    )
 
     start_time = timeit.default_timer()
 
     os.system('python training.py')
 
-    training_time = timeit.default_timer() - start_time
+    training_time = (
+        timeit.default_timer()
+        - start_time
+    )
 
-    return [ingestion_time, training_time]
+    return [
+        ingestion_time,
+        training_time
+    ]
 
 
 ################## Function to check dependencies
 def outdated_packages_list():
 
     outdated = subprocess.check_output(
-        ['pip', 'list', '--outdated']
+        [
+            'pip',
+            'list',
+            '--outdated'
+        ]
     ).decode('utf-8')
 
     return outdated
+
 
 if __name__ == '__main__':
 
@@ -145,3 +170,4 @@ if __name__ == '__main__':
 
     print("\nOutdated Packages:")
     print(outdated_packages_list())
+    
