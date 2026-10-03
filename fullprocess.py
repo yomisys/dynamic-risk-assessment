@@ -7,7 +7,6 @@ import ingestion
 import training
 import scoring
 import deployment
-import reporting
 
 
 ############################
@@ -18,7 +17,6 @@ with open("config.json", "r") as f:
     config = json.load(f)
 
 input_folder_path = config["input_folder_path"]
-output_folder_path = config["output_folder_path"]
 prod_deployment_path = config["prod_deployment_path"]
 
 
@@ -34,7 +32,7 @@ with open(
     "r"
 ) as f:
 
-    ingested_files = f.read().splitlines()
+    deployed_files = f.read().splitlines()
 
 
 ############################
@@ -51,7 +49,8 @@ new_data = False
 
 for file in source_files:
 
-    if file not in ingested_files:
+    if file not in deployed_files:
+
         new_data = True
         break
 
@@ -65,22 +64,28 @@ if not new_data:
     print("No new data found.")
     quit()
 
-
 print("New data found.")
 
 
 ############################
-# Ingest newest data
+# Ingest new data
 ############################
 
 ingestion.merge_multiple_dataframe()
 
 
 ############################
-# Score deployed model
+# Train candidate model
 ############################
 
-new_score = scoring.score_model()
+training.train_model()
+
+candidate_f1 = scoring.score_model()
+
+
+############################
+# Read deployed score
+############################
 
 with open(
     os.path.join(
@@ -90,48 +95,46 @@ with open(
     "r"
 ) as f:
 
-    deployed_score = float(f.read())
+    deployed_f1 = float(f.read())
 
 
 ############################
-# Check for drift
+# Compare candidate vs deployed
 ############################
 
-if new_score >= deployed_score:
+print(
+    f"Candidate F1: {candidate_f1:.3f} | "
+    f"Deployed F1: {deployed_f1:.3f}"
+)
 
-    print("No model drift detected.")
+if candidate_f1 <= deployed_f1:
+
+    print(
+        "Candidate is not better than "
+        "the deployed model. "
+        "Keeping the current deployment."
+    )
+
     quit()
 
 
-print("Model drift detected.")
-
-
 ############################
-# Retrain model
+# Deploy better model
 ############################
 
-training.train_model()
-
-
-############################
-# Generate new score
-############################
-
-new_score = scoring.score_model()
-
-
-############################
-# Redeploy
-############################
+print("Better model found.")
+print("Deploying new model.")
 
 deployment.store_model_into_pickle()
 
 
 ############################
-# Reporting
+# Run reporting
 ############################
 
-reporting.score_model()
+subprocess.run(
+    ["python", "reporting.py"]
+)
 
 if os.path.exists("confusionmatrix.png"):
 
@@ -142,7 +145,7 @@ if os.path.exists("confusionmatrix.png"):
 
 
 ############################
-# API calls
+# Run API calls
 ############################
 
 subprocess.run(
@@ -156,4 +159,4 @@ if os.path.exists("apireturns.txt"):
         "apireturns2.txt"
     )
 
-print("Model redeployed successfully.")
+print("Process complete.")
